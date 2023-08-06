@@ -1,8 +1,10 @@
 extends Node2D
 
-@onready var text_input = $CanvasLayer/Control/HBoxContainer/MarginContainer2/LineEdit
+@export var text_input: LineEdit
+@export var chat_container: VBoxContainer
 # The URL we will connect to
 @export var websocket_url = "wss://swiftnotes.net/ws"
+@onready var label_scene = preload("res://Chat.tscn")
 
 var uuid_util = preload('res://uuid.gd').new()
 
@@ -20,18 +22,40 @@ func _ready():
 	chat.timestamp = Time.get_unix_time_from_system()
 	chat.uuid = uuid_util.generate_uuid()
 
-func _process(delta):
+func contains_chat_id(search_id):
+	for child in chat_container.get_children():
+		if child is Control and child.has_method("set_chat_id"):
+			if child.chat_id == search_id:
+				return child
+	return false
+
+func add_label(chatdata):
+	var label_instance = label_scene.instantiate()
+	label_instance.set_chat_text(chatdata.message)
+	label_instance.set_name_text(chatdata.username)
+	label_instance.set_chat_id(chatdata.uuid)
+	chat_container.add_child(label_instance)
+
+func set_label(label,message):
+	label.set_chat_text(message)
+
+func _process(_delta):
 	socket.poll()
 	var state = socket.get_ready_state()
 	if state == WebSocketPeer.STATE_OPEN:
 		while socket.get_available_packet_count():
-			var chat = socket.get_packet().get_string_from_utf8()
+			var recv_chat = socket.get_packet().get_string_from_utf8()
 			var json = JSON.new()
-			var error = json.parse(chat)
+			var error = json.parse(recv_chat)
 			if error == OK:
 				var data_received = json.data
 				print(data_received)
-			print("Packet: ", chat)
+				if data_received.userid != chat.userid:
+					var chat_present = contains_chat_id(data_received.uuid)
+					if !chat_present:
+						add_label(data_received)
+					else:
+						set_label(chat_present,data_received.message)
 			
 	elif state == WebSocketPeer.STATE_CLOSING:
 		# Keep polling to achieve proper close.
@@ -48,20 +72,16 @@ func _on_line_edit_text_changed(new_text):
 	var state = socket.get_ready_state()
 	if state == WebSocketPeer.STATE_OPEN:
 		# send the json object stringified
-		print(new_text)
 		chat.message = new_text
-		var json = JSON.new()
-		socket.send_text(json.stringify(chat))
+		socket.send_text(JSON.stringify(chat))
 
 
 
 func _on_line_edit_text_submitted(new_text):
-	print("submitted this trash: ", new_text)
 	text_input.clear()
 	chat.finished = true
 	chat.message = new_text
 	var state = socket.get_ready_state()
 	if state == WebSocketPeer.STATE_OPEN:
-		var json = JSON.new()
-		socket.send_text(json.stringify(chat))
+		socket.send_text(JSON.stringify(chat))
 		chat.uuid = uuid_util.generate_uuid()
