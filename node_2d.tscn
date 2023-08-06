@@ -5,8 +5,49 @@
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_vx7re")
 
-[node name="TextEdit" type="TextEdit" parent="."]
-offset_right = 392.0
-offset_bottom = 193.0
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[connection signal="text_changed" from="TextEdit" to="." method="_on_text_edit_text_changed"]
+[node name="Control" type="Control" parent="CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Control"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -41.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/separation = 20
+
+[node name="MarginContainer2" type="MarginContainer" parent="CanvasLayer/Control/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="LineEdit" type="LineEdit" parent="CanvasLayer/Control/HBoxContainer/MarginContainer2"]
+custom_minimum_size = Vector2(40, 20)
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/HBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_bottom = 10
+
+[node name="Button" type="Button" parent="CanvasLayer/Control/HBoxContainer/MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+size_flags_vertical = 4
+text = "Send Message
+"
+
+[connection signal="text_changed" from="CanvasLayer/Control/HBoxContainer/MarginContainer2/LineEdit" to="." method="_on_line_edit_text_changed"]
+[connection signal="text_submitted" from="CanvasLayer/Control/HBoxContainer/MarginContainer2/LineEdit" to="." method="_on_line_edit_text_submitted"]
