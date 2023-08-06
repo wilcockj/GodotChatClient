@@ -1,0 +1,30 @@
+[gd_scene load_steps=2 format=3 uid="uid://6ljq22yxfido"]
+
+[ext_resource type="Script" path="res://Chat.gd" id="1_0cply"]
+
+[node name="Control" type="Control" node_paths=PackedStringArray("chat_label", "name_label")]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 3
+anchors_preset = 10
+anchor_right = 1.0
+grow_horizontal = 2
+script = ExtResource("1_0cply")
+chat_label = NodePath("HBoxContainer/Chat_Label")
+name_label = NodePath("HBoxContainer/Name_Label")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Name_Label" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+theme_override_font_sizes/font_size = 40
+
+[node name="Chat_Label" type="Label" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.85098, 0.85098, 0.85098, 1)
+theme_override_font_sizes/font_size = 40
