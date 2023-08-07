@@ -1,12 +1,14 @@
-[gd_scene load_steps=2 format=3 uid="uid://dg8j4isgoexls"]
+[gd_scene load_steps=3 format=3 uid="uid://dg8j4isgoexls"]
 
 [ext_resource type="Script" path="res://Node2D.gd" id="1_vx7re"]
+[ext_resource type="Texture2D" uid="uid://1vnf3pbmwuam" path="res://images/disconnect.svg" id="2_uor1j"]
 
-[node name="Node2D" type="Node2D" node_paths=PackedStringArray("retry_timer", "text_input", "chat_container", "audio_player")]
+[node name="Node2D" type="Node2D" node_paths=PackedStringArray("retry_timer", "text_input", "chat_container", "connection_indicator", "audio_player")]
 script = ExtResource("1_vx7re")
 retry_timer = NodePath("WebSocketRetryTimer")
 text_input = NodePath("CanvasLayer/Control/VBoxContainer/HBoxContainer/MarginContainer2/LineEdit")
 chat_container = NodePath("CanvasLayer/Control/VBoxContainer/ScrollContainer/VBoxContainer")
+connection_indicator = NodePath("CanvasLayer/Control/VBoxContainer/StatusBar/Connection_Indicator")
 audio_player = NodePath("AudioStreamPlayer")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
@@ -27,12 +29,22 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/VBoxContainer"]
+[node name="StatusBar" type="HBoxContainer" parent="CanvasLayer/Control/VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Connection_Indicator" type="TextureRect" parent="CanvasLayer/Control/VBoxContainer/StatusBar"]
+layout_mode = 2
+texture = ExtResource("2_uor1j")
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/VBoxContainer/StatusBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
 theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 
-[node name="Button" type="Button" parent="CanvasLayer/Control/VBoxContainer/MarginContainer"]
+[node name="Button" type="Button" parent="CanvasLayer/Control/VBoxContainer/StatusBar/MarginContainer"]
 custom_minimum_size = Vector2(80, 50)
 layout_mode = 2
 size_flags_horizontal = 8

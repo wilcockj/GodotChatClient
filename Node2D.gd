@@ -13,9 +13,13 @@ var max_retry_delay = 16.0  # The maximum delay of 16 seconds
 
 @export var text_input: LineEdit
 @export var chat_container: VBoxContainer
+@export var connection_indicator: TextureRect
+@onready var connection_image = preload("res://images/connect.svg")
+@onready var disconnection_image = preload("res://images/disconnect.svg")
 
 # The URL we will connect to
-@export var websocket_url = "wss://swiftnotes.net/ws"
+#@export var websocket_url = "wss://swiftnotes.net/ws"
+@export var websocket_url = "ws://localhost:8089/ws"
 # Audio player for connect and disconnect
 @export var audio_player: AudioStreamPlayer
 
@@ -80,6 +84,7 @@ func _process(_delta):
 		if connection_state == DISCONNECTED:
 			connection_state = CONNECTED
 			play_connect_sound()
+			connection_indicator.texture = connection_image
  
 		while socket.get_available_packet_count():
 			var recv_chat = socket.get_packet().get_string_from_utf8()
@@ -103,9 +108,12 @@ func _process(_delta):
 		if connection_state == CONNECTED:
 			connection_state = DISCONNECTED
 			play_disconnect_sound()
+			socket.close(-1)
+			connection_indicator.texture = disconnection_image
 		var code = socket.get_close_code()
 		var reason = socket.get_close_reason()
-		socket.close()
+		# has to be -1 to close immediately
+		#socket.close(-1)
 		print("WebSocket closed with code: %d, reason %s. Clean: %s" % [code, reason, code != -1])
 		set_process(false) # Stop processing.
 		# need to add actual retry connecting with backoff
@@ -149,6 +157,7 @@ func _on_line_edit_text_submitted(new_text):
 	if state == WebSocketPeer.STATE_OPEN:
 		socket.send_text(JSON.stringify(chat))
 		chat.uuid = uuid_util.generate_uuid()
+	add_label(chat)
 
 
 func _on_button_pressed():
