@@ -84,4 +84,5 @@ one_shot = true
 
 [connection signal="text_changed" from="CanvasLayer/Control/VBoxContainer/HBoxContainer/MarginContainer2/LineEdit" to="." method="_on_line_edit_text_changed"]
 [connection signal="text_submitted" from="CanvasLayer/Control/VBoxContainer/HBoxContainer/MarginContainer2/LineEdit" to="." method="_on_line_edit_text_submitted"]
+[connection signal="pressed" from="CanvasLayer/Control/VBoxContainer/HBoxContainer/MarginContainer/Button" to="." method="_on_button_pressed"]
 [connection signal="timeout" from="WebSocketRetryTimer" to="." method="_on_retry_timer_timeout"]

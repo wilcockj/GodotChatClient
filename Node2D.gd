@@ -149,3 +149,7 @@ func _on_line_edit_text_submitted(new_text):
 	if state == WebSocketPeer.STATE_OPEN:
 		socket.send_text(JSON.stringify(chat))
 		chat.uuid = uuid_util.generate_uuid()
+
+
+func _on_button_pressed():
+	_on_line_edit_text_submitted(text_input.text)
