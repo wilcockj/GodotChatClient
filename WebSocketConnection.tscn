@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://t3afrtjwjhrb"]
+
+[ext_resource type="Script" path="res://WebSocketConnection.gd" id="1_f8vda"]
+
+[node name="WebSocketConnection" type="Node2D"]
+script = ExtResource("1_f8vda")
+websocket_url = "ws://localhost:8089/ws"

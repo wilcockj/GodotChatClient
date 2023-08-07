@@ -30,11 +30,11 @@ var uuid_util = preload('res://uuid.gd').new()
 # make chat a class with methods to send and set timestamp etc.
 var chat = {"finished": false, "message": "", "userid": "", "username": "", "uuid":"", "timestamp": 0}
 # Our WebSocketClient instance
-var socket = WebSocketPeer.new()
+var socket: WebSocketPeer
 
 func _ready():
 	print(uuid_util.generate_uuid())
-	socket.connect_to_url(websocket_url)
+	socket = $WebSocketConnection.socket
 	chat.userid = uuid_util.generate_uuid()
 	chat.username = "JohnGodot"
 	chat.finished = false
@@ -85,6 +85,7 @@ func _process(_delta):
 			connection_state = CONNECTED
 			play_connect_sound()
 			connection_indicator.texture = connection_image
+			#connection_indicator.
  
 		while socket.get_available_packet_count():
 			var recv_chat = socket.get_packet().get_string_from_utf8()
@@ -105,20 +106,27 @@ func _process(_delta):
 	elif state == WebSocketPeer.STATE_CLOSED:
 		#close socket so it can be reconnected
 		
+		var code = socket.get_close_code()
+		var reason = socket.get_close_reason()
+		
 		if connection_state == CONNECTED:
 			connection_state = DISCONNECTED
 			play_disconnect_sound()
-			socket.close(-1)
 			connection_indicator.texture = disconnection_image
-		var code = socket.get_close_code()
-		var reason = socket.get_close_reason()
+			socket.close(-1)
+		
 		# has to be -1 to close immediately
-		#socket.close(-1)
+
 		print("WebSocket closed with code: %d, reason %s. Clean: %s" % [code, reason, code != -1])
 		set_process(false) # Stop processing.
+		socket = null
+		$WebSocketConnection.socket = null
+		$WebSocketConnection.queue_free()
 		# need to add actual retry connecting with backoff
 		if current_retry == 0:
-			socket = WebSocketPeer.new()
+			var websocket_scene_instance = load("res://WebSocketConnection.tscn").instantiate()
+			add_child(websocket_scene_instance)
+			socket = websocket_scene_instance.socket
 		if current_retry < max_retries:
 			retry_connecting()
 		else:
