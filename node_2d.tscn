@@ -2,10 +2,12 @@
 
 [ext_resource type="Script" path="res://Node2D.gd" id="1_vx7re"]
 
-[node name="Node2D" type="Node2D" node_paths=PackedStringArray("text_input", "chat_container")]
+[node name="Node2D" type="Node2D" node_paths=PackedStringArray("retry_timer", "text_input", "chat_container", "audio_player")]
 script = ExtResource("1_vx7re")
-text_input = NodePath("CanvasLayer/Control/HBoxContainer/MarginContainer2/LineEdit")
-chat_container = NodePath("CanvasLayer/Control/ScrollContainer/VBoxContainer")
+retry_timer = NodePath("WebSocketRetryTimer")
+text_input = NodePath("CanvasLayer/Control/VBoxContainer/HBoxContainer/MarginContainer2/LineEdit")
+chat_container = NodePath("CanvasLayer/Control/VBoxContainer/ScrollContainer/VBoxContainer")
+audio_player = NodePath("AudioStreamPlayer")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -17,53 +19,69 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Control"]
-custom_minimum_size = Vector2(20, 20)
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Control"]
 layout_mode = 1
-anchors_preset = 12
-anchor_top = 1.0
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -41.0
 grow_horizontal = 2
-grow_vertical = 0
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+
+[node name="Button" type="Button" parent="CanvasLayer/Control/VBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(80, 50)
+layout_mode = 2
+size_flags_horizontal = 8
+text = "Options"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/Control/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Control/VBoxContainer"]
+custom_minimum_size = Vector2(20, 20)
+layout_mode = 2
+size_flags_vertical = 8
 theme_override_constants/separation = 20
 
-[node name="MarginContainer2" type="MarginContainer" parent="CanvasLayer/Control/HBoxContainer"]
+[node name="MarginContainer2" type="MarginContainer" parent="CanvasLayer/Control/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="LineEdit" type="LineEdit" parent="CanvasLayer/Control/HBoxContainer/MarginContainer2"]
+[node name="LineEdit" type="LineEdit" parent="CanvasLayer/Control/VBoxContainer/HBoxContainer/MarginContainer2"]
 custom_minimum_size = Vector2(40, 20)
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/HBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/VBoxContainer/HBoxContainer"]
 layout_mode = 2
+theme_override_constants/margin_right = 5
 theme_override_constants/margin_bottom = 10
 
-[node name="Button" type="Button" parent="CanvasLayer/Control/HBoxContainer/MarginContainer"]
+[node name="Button" type="Button" parent="CanvasLayer/Control/VBoxContainer/HBoxContainer/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 2
 size_flags_vertical = 4
 text = "Send Message
 "
 
-[node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/Control"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_bottom = -49.0
-grow_horizontal = 2
-grow_vertical = 2
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+volume_db = -14.857
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Control/ScrollContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
+[node name="WebSocketRetryTimer" type="Timer" parent="."]
+one_shot = true
 
-[connection signal="text_changed" from="CanvasLayer/Control/HBoxContainer/MarginContainer2/LineEdit" to="." method="_on_line_edit_text_changed"]
-[connection signal="text_submitted" from="CanvasLayer/Control/HBoxContainer/MarginContainer2/LineEdit" to="." method="_on_line_edit_text_submitted"]
+[connection signal="text_changed" from="CanvasLayer/Control/VBoxContainer/HBoxContainer/MarginContainer2/LineEdit" to="." method="_on_line_edit_text_changed"]
+[connection signal="text_submitted" from="CanvasLayer/Control/VBoxContainer/HBoxContainer/MarginContainer2/LineEdit" to="." method="_on_line_edit_text_submitted"]
+[connection signal="timeout" from="WebSocketRetryTimer" to="." method="_on_retry_timer_timeout"]

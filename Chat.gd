@@ -5,7 +5,6 @@ var chat_id = "0"
 
 func set_size_for_wrap():
 	var ysize = chat_label.get_line_count() * chat_label.get_line_height()
-	print(ysize)
 	set_custom_minimum_size(Vector2(0,ysize))
 
 func set_chat_text(text):
