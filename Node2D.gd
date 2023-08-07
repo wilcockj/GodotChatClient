@@ -15,7 +15,7 @@ var max_retry_delay = 16.0  # The maximum delay of 16 seconds
 @export var chat_container: VBoxContainer
 
 # The URL we will connect to
-@export var websocket_url = "ws://localhost:8089/ws"
+@export var websocket_url = "wss://swiftnotes.net/ws"
 # Audio player for connect and disconnect
 @export var audio_player: AudioStreamPlayer
 
