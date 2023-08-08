@@ -1,16 +1,20 @@
-[gd_scene load_steps=4 format=3 uid="uid://dg8j4isgoexls"]
+[gd_scene load_steps=6 format=3 uid="uid://dg8j4isgoexls"]
 
 [ext_resource type="Script" path="res://Node2D.gd" id="1_vx7re"]
 [ext_resource type="Texture2D" uid="uid://1vnf3pbmwuam" path="res://images/disconnect.svg" id="2_uor1j"]
 [ext_resource type="PackedScene" uid="uid://t3afrtjwjhrb" path="res://WebSocketConnection.tscn" id="3_207ko"]
+[ext_resource type="AudioStream" uid="uid://b1ab6l0tv3coe" path="res://sounds/disconnect.mp3" id="3_gee5h"]
+[ext_resource type="AudioStream" uid="uid://x4e1hwsqbmrb" path="res://sounds/connect.mp3" id="4_bc5nq"]
 
-[node name="Node2D" type="Node2D" node_paths=PackedStringArray("retry_timer", "text_input", "chat_container", "connection_indicator", "audio_player")]
+[node name="Node2D" type="Node2D" node_paths=PackedStringArray("retry_timer", "text_input", "chat_container", "connection_indicator", "disconnect_player", "connect_player", "audio_player")]
 script = ExtResource("1_vx7re")
 retry_timer = NodePath("WebSocketRetryTimer")
 text_input = NodePath("CanvasLayer/Control/VBoxContainer/HBoxContainer/MarginContainer2/LineEdit")
 chat_container = NodePath("CanvasLayer/Control/VBoxContainer/ScrollContainer/VBoxContainer")
 connection_indicator = NodePath("CanvasLayer/Control/VBoxContainer/StatusBar/Connection_Indicator")
-audio_player = NodePath("AudioStreamPlayer")
+disconnect_player = NodePath("DisconnectPlayer")
+connect_player = NodePath("ConnectPlayer")
+audio_player = NodePath("ConnectPlayer")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -90,8 +94,13 @@ size_flags_vertical = 4
 text = "Send Message
 "
 
-[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
-volume_db = -14.857
+[node name="DisconnectPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_gee5h")
+volume_db = -14.0
+
+[node name="ConnectPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_bc5nq")
+volume_db = -14.0
 
 [node name="WebSocketRetryTimer" type="Timer" parent="."]
 one_shot = true

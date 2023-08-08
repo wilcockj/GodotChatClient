@@ -14,6 +14,8 @@ var max_retry_delay = 16.0  # The maximum delay of 16 seconds
 @export var text_input: LineEdit
 @export var chat_container: VBoxContainer
 @export var connection_indicator: TextureRect
+@export var disconnect_player: AudioStreamPlayer
+@export var connect_player: AudioStreamPlayer
 @onready var connection_image = preload("res://images/connect.svg")
 @onready var disconnection_image = preload("res://images/disconnect.svg")
 
@@ -62,22 +64,10 @@ func set_label(label,message):
 	label.set_chat_text(message)
 
 func play_connect_sound():
-	var stream = AudioStreamMP3.new()
-	var file = FileAccess.open("res://sounds/connect.mp3", FileAccess.READ)
-	var sound = AudioStreamMP3.new()
-	sound.data = file.get_buffer(file.get_length())
-	audio_player.stream = sound
-	# Play the audio
-	audio_player.play()
+	connect_player.play()
 
 func play_disconnect_sound():
-	var stream = AudioStreamMP3.new()
-	var file = FileAccess.open("res://sounds/disconnect.mp3", FileAccess.READ)
-	var sound = AudioStreamMP3.new()
-	sound.data = file.get_buffer(file.get_length())
-	audio_player.stream = sound
-	# Play the audio
-	audio_player.play()
+	disconnect_player.play()
 
 func _process(_delta):
 	socket.poll()

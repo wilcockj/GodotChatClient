@@ -15,10 +15,15 @@ run/main_scene="res://node_2d.tscn"
 config/features=PackedStringArray("4.1", "Forward Plus")
 config/icon="res://icon.svg"
 
+[display]
+
+window/handheld/orientation=1
+
 [gui]
 
 theme/custom_font="res://Roboto.tres"
 
 [rendering]
 
+textures/vram_compression/import_etc2_astc=true
 environment/defaults/default_clear_color=Color(0.223529, 0.223529, 0.223529, 1)
