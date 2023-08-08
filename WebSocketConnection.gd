@@ -6,5 +6,3 @@ var socket = WebSocketPeer.new()
 
 func _ready():
 	socket.connect_to_url(websocket_url)
-	print(socket.get_requested_url())
-	

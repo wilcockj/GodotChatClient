@@ -50,6 +50,8 @@ func contains_chat_id(search_id):
 	return false
 
 func add_label(chatdata):
+	if chatdata.username == "":
+		chatdata.username = "Anon"
 	var label_instance = label_scene.instantiate()
 	label_instance.set_chat_text(chatdata.message)
 	label_instance.set_name_text(chatdata.username)
@@ -148,16 +150,27 @@ func retry_connecting():
 func _on_retry_timer_timeout():
 	retry_connecting()
 
+func is_text_clear(text) -> bool:
+	var text_clear = text.replace(" ","")
+	if text_clear == "":
+		#only spaces dont send
+		return true
+	return false
+	
 func _on_line_edit_text_changed(new_text):
 	var state = socket.get_ready_state()
 	if state == WebSocketPeer.STATE_OPEN:
 		# send the json object stringified
 		chat.message = new_text
-		socket.send_text(JSON.stringify(chat))
+		if !is_text_clear(new_text):
+			socket.send_text(JSON.stringify(chat))
 
 
 
 func _on_line_edit_text_submitted(new_text):
+	if is_text_clear(new_text):
+		#only spaces dont send
+		return
 	text_input.clear()
 	chat.finished = true
 	chat.message = new_text
