@@ -12,6 +12,8 @@ var current_retry = 0  # The current retry count
 var retry_delay = 1.0  # Start with a delay of 1 second
 var max_retry_delay = 16.0  # The maximum delay of 16 seconds
 var websocket_url = ""
+var websocket_scene_instances = []
+
 @export var retry_timer: Timer
 
 @export var text_input: LineEdit
@@ -21,7 +23,7 @@ var websocket_url = ""
 @export var connect_player: AudioStreamPlayer
 @onready var connection_image = preload("res://images/connect.svg")
 @onready var disconnection_image = preload("res://images/disconnect.svg")
-
+@onready var websocket_scene = preload("res://WebSocketConnection.tscn")
 # The URL we will connect to
 #@export var websocket_url = "wss://swiftnotes.net/ws"
 # Audio player for connect and disconnect
@@ -35,11 +37,14 @@ var uuid_util = preload('res://uuid.gd').new()
 var chat = {"finished": false, "message": "", "userid": "", "username": "", "uuid":"", "timestamp": 0}
 # Our WebSocketClient instance
 var socket: WebSocketPeer
-
+var websocket_scene_instance
 func _ready():
 	print(uuid_util.generate_uuid())
-	socket = $WebSocketConnection.socket
-	websocket_url = $WebSocketConnection.websocket_url
+	websocket_scene_instance = websocket_scene.instantiate()
+	add_child(websocket_scene_instance)
+	socket = websocket_scene_instance.socket
+	websocket_url = websocket_scene_instance.websocket_url
+	
 	chat.userid = uuid_util.generate_uuid()
 	chat.username = "JohnGodot"
 	chat.finished = false
@@ -78,6 +83,16 @@ func init_backoff_values():
 	retry_delay = 1.0  # Start with a delay of 1 second
 	max_retry_delay = 16.0  # The maximum delay of 16 seconds
 
+func _delete_instances_except(instances,index_to_keep):
+	for i in instances:
+		print(typeof(i))
+		#print(i.bundled)
+		if typeof(i) == TYPE_OBJECT:
+			if i != index_to_keep:
+				i.queue_free()
+	instances.clear()
+	instances.append(websocket_scene_instance)
+
 func _process(_delta):
 	socket.poll()
 	var state = socket.get_ready_state()
@@ -88,6 +103,10 @@ func _process(_delta):
 			connection_state = CONNECTED
 			play_connect_sound()
 			connection_indicator.texture = connection_image
+			retry_timer.stop()
+			_delete_instances_except(websocket_scene_instances,websocket_scene_instance)
+			
+			#delete all but current websocket node
 			#connection_indicator.
  
 		while socket.get_available_packet_count():
@@ -117,34 +136,59 @@ func _process(_delta):
 			play_disconnect_sound()
 			connection_indicator.texture = disconnection_image
 			socket.close(-1)
+			var timer = Timer.new()
+			# Configure the timer
+			timer.wait_time = 10
+			timer.one_shot = true
+			# Add the timer to the current scene
+			self.add_child(timer)
+			# Start the timer
+			timer.start()
+			# Connect the timer's timeout signal to a function
+			timer.connect("timeout",_Garbage_Collect_Timeout.bind(websocket_scene_instance))
+			retry_timer.start(retry_delay)
+			print("WebSocket closed with code: %d, reason %s. Clean: %s" % [code, reason, code != -1])
 		
 		# has to be -1 to close immediately
 
-		print("WebSocket closed with code: %d, reason %s. Clean: %s" % [code, reason, code != -1])
+
 		#$WebSocketConnection.socket = null
 		#$WebSocketConnection.queue_free()
 		
 		# TODO free the websocket connection after 10 seconds
 		# need to add actual retry connecting with backoff
-		if current_retry == 0:
-			var websocket_scene_instance = load("res://WebSocketConnection.tscn").instantiate()
-			add_child(websocket_scene_instance)
-			socket = websocket_scene_instance.socket
-			retry_timer.start(retry_delay)
-		else:
-			print("Max retries reached. Stopping reconnection attempts.")
+#		if current_retry == 0:
+#			websocket_scene_instance = load("res://WebSocketConnection.tscn").instantiate()
+#			add_child(websocket_scene_instance)
+#			socket = websocket_scene_instance.socket
+			
+
+func _Garbage_Collect_Timeout(node):
+	var wr = weakref(node)
+	if (!wr.get_ref()):
+		# freed
+		pass
+	else:
+		# not freed
+		node.queue_free()
+		
 
 func retry_connecting():
-	current_retry += 1
-	print("Attempting to reconnect to %s. Try number: %d" % [websocket_url, current_retry])
-	# Try to connect again
-	print(socket.get_ready_state())
-	socket.connect_to_url(websocket_url)
-	# Increment delay for the next potential retry, but cap it to max_retry_delay
-	retry_timer.stop()
-	retry_timer.start(retry_delay)
-	print(retry_delay)
-	retry_delay = min(retry_delay * 2, max_retry_delay)
+	if connection_state == DISCONNECTED:
+		websocket_scene_instance = load("res://WebSocketConnection.tscn").instantiate()
+		add_child(websocket_scene_instance)
+		websocket_scene_instances.append(websocket_scene_instance)
+		socket = websocket_scene_instance.socket
+		current_retry += 1
+		print("Attempting to reconnect to %s. Try number: %d" % [websocket_url, current_retry])
+		# Try to connect again
+		print(socket.get_ready_state())
+		socket.connect_to_url(websocket_url)
+		# Increment delay for the next potential retry, but cap it to max_retry_delay
+		retry_timer.stop()
+		retry_timer.start(retry_delay)
+		print(retry_delay)
+		retry_delay = min(retry_delay * 2, max_retry_delay)
 	
 func _on_retry_timer_timeout():
 	retry_connecting()

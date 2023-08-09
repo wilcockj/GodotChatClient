@@ -1,8 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://dg8j4isgoexls"]
+[gd_scene load_steps=5 format=3 uid="uid://dg8j4isgoexls"]
 
 [ext_resource type="Script" path="res://Node2D.gd" id="1_vx7re"]
 [ext_resource type="Texture2D" uid="uid://1vnf3pbmwuam" path="res://images/disconnect.svg" id="2_uor1j"]
-[ext_resource type="PackedScene" uid="uid://t3afrtjwjhrb" path="res://WebSocketConnection.tscn" id="3_207ko"]
 [ext_resource type="AudioStream" uid="uid://b1ab6l0tv3coe" path="res://sounds/disconnect.mp3" id="3_gee5h"]
 [ext_resource type="AudioStream" uid="uid://x4e1hwsqbmrb" path="res://sounds/connect.mp3" id="4_bc5nq"]
 
@@ -104,8 +103,6 @@ volume_db = -14.0
 
 [node name="WebSocketRetryTimer" type="Timer" parent="."]
 one_shot = true
-
-[node name="WebSocketConnection" parent="." instance=ExtResource("3_207ko")]
 
 [connection signal="text_changed" from="CanvasLayer/Control/VBoxContainer/HBoxContainer/MarginContainer2/LineEdit" to="." method="_on_line_edit_text_changed"]
 [connection signal="text_submitted" from="CanvasLayer/Control/VBoxContainer/HBoxContainer/MarginContainer2/LineEdit" to="." method="_on_line_edit_text_submitted"]
