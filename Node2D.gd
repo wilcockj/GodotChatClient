@@ -8,7 +8,7 @@ var max_retries = 5  # The maximum number of times to retry
 var current_retry = 0  # The current retry count
 var retry_delay = 1.0  # Start with a delay of 1 second
 var max_retry_delay = 16.0  # The maximum delay of 16 seconds
-
+var websocket_url = ""
 @export var retry_timer: Timer
 
 @export var text_input: LineEdit
@@ -21,7 +21,6 @@ var max_retry_delay = 16.0  # The maximum delay of 16 seconds
 
 # The URL we will connect to
 #@export var websocket_url = "wss://swiftnotes.net/ws"
-@export var websocket_url = "ws://localhost:8089/ws"
 # Audio player for connect and disconnect
 @export var audio_player: AudioStreamPlayer
 
@@ -37,6 +36,7 @@ var socket: WebSocketPeer
 func _ready():
 	print(uuid_util.generate_uuid())
 	socket = $WebSocketConnection.socket
+	websocket_url = $WebSocketConnection.websocket_url
 	chat.userid = uuid_util.generate_uuid()
 	chat.username = "JohnGodot"
 	chat.finished = false
@@ -110,24 +110,20 @@ func _process(_delta):
 		# has to be -1 to close immediately
 
 		print("WebSocket closed with code: %d, reason %s. Clean: %s" % [code, reason, code != -1])
-		set_process(false) # Stop processing.
-		socket = null
-		$WebSocketConnection.socket = null
-		$WebSocketConnection.queue_free()
+		#$WebSocketConnection.socket = null
+		#$WebSocketConnection.queue_free()
 		# need to add actual retry connecting with backoff
 		if current_retry == 0:
 			var websocket_scene_instance = load("res://WebSocketConnection.tscn").instantiate()
 			add_child(websocket_scene_instance)
 			socket = websocket_scene_instance.socket
-		if current_retry < max_retries:
-			retry_connecting()
+			retry_timer.start(retry_delay)
 		else:
 			print("Max retries reached. Stopping reconnection attempts.")
-			set_process(false)  # Stop processing.
 
 func retry_connecting():
 	current_retry += 1
-	print("Attempting to reconnect. Try number: %d" % current_retry)
+	print("Attempting to reconnect to %s. Try number: %d" % [websocket_url, current_retry])
 	# Try to connect again
 	print(socket.get_ready_state())
 	socket.connect_to_url(websocket_url)
