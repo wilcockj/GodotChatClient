@@ -111,6 +111,9 @@ func _process(_delta):
  
 		while socket.get_available_packet_count():
 			var recv_chat = socket.get_packet().get_string_from_utf8()
+			if recv_chat == "__pong__":
+				#got return from out ping
+				continue
 			var json = JSON.new()
 			var error = json.parse(recv_chat)
 			if error == OK:
@@ -226,3 +229,10 @@ func _on_line_edit_text_submitted(new_text):
 
 func _on_button_pressed():
 	_on_line_edit_text_submitted(text_input.text)
+
+
+func _on_ping_timer_timeout():
+	var state = socket.get_ready_state()
+	if state == WebSocketPeer.STATE_OPEN:
+		print("Sending ping")
+		socket.send_text("__ping__")
