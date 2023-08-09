@@ -1,6 +1,9 @@
 extends Node2D
 
-# todo add messages sent by self
+
+#todo delete node after a timer
+#dont have websocket node in scene instatiate in ready
+#time to send __ping__ message and check for that in the recieve
 enum {DISCONNECTED, CONNECTED} 
 var connection_state = DISCONNECTED
 # Variables related to retry connection and backoff
@@ -69,10 +72,18 @@ func play_connect_sound():
 func play_disconnect_sound():
 	disconnect_player.play()
 
+func init_backoff_values():
+	max_retries = 5  # The maximum number of times to retry
+	current_retry = 0  # The current retry count
+	retry_delay = 1.0  # Start with a delay of 1 second
+	max_retry_delay = 16.0  # The maximum delay of 16 seconds
+
 func _process(_delta):
 	socket.poll()
 	var state = socket.get_ready_state()
 	if state == WebSocketPeer.STATE_OPEN:
+		
+		
 		if connection_state == DISCONNECTED:
 			connection_state = CONNECTED
 			play_connect_sound()
@@ -112,6 +123,8 @@ func _process(_delta):
 		print("WebSocket closed with code: %d, reason %s. Clean: %s" % [code, reason, code != -1])
 		#$WebSocketConnection.socket = null
 		#$WebSocketConnection.queue_free()
+		
+		# TODO free the websocket connection after 10 seconds
 		# need to add actual retry connecting with backoff
 		if current_retry == 0:
 			var websocket_scene_instance = load("res://WebSocketConnection.tscn").instantiate()
