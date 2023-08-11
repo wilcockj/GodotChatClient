@@ -1,9 +1,11 @@
 extends Node2D
 
 
-#todo delete node after a timer
-#dont have websocket node in scene instatiate in ready
-#time to send __ping__ message and check for that in the recieve
+#todo change size of the typing box
+#so mobile ui makes more sense
+
+#make message box follow above keyboard 
+#on mobile, no idea how to do that
 enum {DISCONNECTED, CONNECTED} 
 var connection_state = DISCONNECTED
 # Variables related to retry connection and backoff
