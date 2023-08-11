@@ -4,6 +4,8 @@ var chat_id = "0"
 @export var name_label: Label
 
 func set_size_for_wrap():
+    # Gets the size of a line, needs to be checked 
+    # incase of wraparound and if the window is resized
 	var ysize = chat_label.get_line_count() * chat_label.get_line_height()
 	set_custom_minimum_size(Vector2(0,ysize))
 

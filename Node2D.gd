@@ -89,7 +89,7 @@ func _delete_instances_except(instances,index_to_keep):
 		#print(i.bundled)
 		if typeof(i) == TYPE_OBJECT:
 			if i != index_to_keep:
-				i.queue_free()
+				_Garbage_Collect_Timeout(i)
 	instances.clear()
 	instances.append(websocket_scene_instance)
 
