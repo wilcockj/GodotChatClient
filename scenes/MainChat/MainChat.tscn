@@ -1,11 +1,12 @@
-[gd_scene load_steps=5 format=3 uid="uid://dg8j4isgoexls"]
+[gd_scene load_steps=6 format=3 uid="uid://dg8j4isgoexls"]
 
 [ext_resource type="Script" path="res://scenes/MainChat/MainChat.gd" id="1_i0ssy"]
 [ext_resource type="Texture2D" uid="uid://1vnf3pbmwuam" path="res://assets/images/disconnect.svg" id="2_jhovj"]
+[ext_resource type="FontVariation" uid="uid://c7afrdiv4foeo" path="res://assets/font/Roboto.tres" id="3_4h8rv"]
 [ext_resource type="AudioStream" uid="uid://b1ab6l0tv3coe" path="res://assets/sounds/disconnect.mp3" id="3_oskle"]
 [ext_resource type="AudioStream" uid="uid://x4e1hwsqbmrb" path="res://assets/sounds/connect.mp3" id="4_dbh4k"]
 
-[node name="Node2D" type="Node2D" node_paths=PackedStringArray("retry_timer", "text_input", "chat_container", "connection_indicator", "disconnect_player", "connect_player")]
+[node name="Node2D" type="Node2D" node_paths=PackedStringArray("retry_timer", "text_input", "chat_container", "connection_indicator", "disconnect_player", "connect_player", "url_label")]
 script = ExtResource("1_i0ssy")
 retry_timer = NodePath("WebSocketRetryTimer")
 text_input = NodePath("CanvasLayer/Control/VBoxContainer/HBoxContainer/MarginContainer2/LineEdit")
@@ -13,6 +14,7 @@ chat_container = NodePath("CanvasLayer/Control/VBoxContainer/ScrollContainer/VBo
 connection_indicator = NodePath("CanvasLayer/Control/VBoxContainer/StatusBar/Connection_Indicator")
 disconnect_player = NodePath("DisconnectPlayer")
 connect_player = NodePath("ConnectPlayer")
+url_label = NodePath("CanvasLayer/Control/VBoxContainer/StatusBar/Url_Label")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -40,6 +42,11 @@ size_flags_vertical = 0
 layout_mode = 2
 texture = ExtResource("2_jhovj")
 stretch_mode = 3
+
+[node name="Url_Label" type="Label" parent="CanvasLayer/Control/VBoxContainer/StatusBar"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_4h8rv")
+theme_override_font_sizes/font_size = 40
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/VBoxContainer/StatusBar"]
 layout_mode = 2

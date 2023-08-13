@@ -23,6 +23,7 @@ var websocket_scene_instances = []
 @export var connection_indicator: TextureRect
 @export var disconnect_player: AudioStreamPlayer
 @export var connect_player: AudioStreamPlayer
+@export var url_label: Label
 @onready var connection_image = preload("res://assets/images/connect.svg")
 @onready var disconnection_image = preload("res://assets/images/disconnect.svg")
 @onready var websocket_scene = preload("res://scenes/WebSocketConnection/WebSocketConnection.tscn")
@@ -47,7 +48,7 @@ func _ready():
 	chat.finished = false
 	chat.timestamp = Time.get_unix_time_from_system()
 	chat.uuid = uuid_util.generate_uuid()
-	
+	url_label.text = "Connected to: " + socket.get_requested_url()
 
 func contains_chat_id(search_id):
 	for child in chat_container.get_children():
