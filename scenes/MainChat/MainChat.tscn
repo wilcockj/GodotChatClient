@@ -9,7 +9,7 @@
 [node name="Node2D" type="Node2D" node_paths=PackedStringArray("retry_timer", "text_input", "chat_container", "connection_indicator", "disconnect_player", "connect_player", "url_label")]
 script = ExtResource("1_i0ssy")
 retry_timer = NodePath("WebSocketRetryTimer")
-text_input = NodePath("CanvasLayer/Control/VBoxContainer/HBoxContainer/MarginContainer2/LineEdit")
+text_input = NodePath("CanvasLayer/Control/VBoxContainer/HBoxContainer/MarginContainer2/TextEntry")
 chat_container = NodePath("CanvasLayer/Control/VBoxContainer/ScrollContainer/VBoxContainer")
 connection_indicator = NodePath("CanvasLayer/Control/VBoxContainer/StatusBar/Connection_Indicator")
 disconnect_player = NodePath("DisconnectPlayer")
@@ -44,6 +44,7 @@ texture = ExtResource("2_jhovj")
 stretch_mode = 3
 
 [node name="Url_Label" type="Label" parent="CanvasLayer/Control/VBoxContainer/StatusBar"]
+visible = false
 layout_mode = 2
 theme_override_fonts/font = ExtResource("3_4h8rv")
 theme_override_font_sizes/font_size = 40
@@ -71,7 +72,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Control/VBoxContainer"]
-custom_minimum_size = Vector2(20, 20)
+custom_minimum_size = Vector2(20, 120)
 layout_mode = 2
 size_flags_vertical = 8
 theme_override_constants/separation = 20
@@ -82,10 +83,9 @@ size_flags_horizontal = 3
 theme_override_constants/margin_left = 10
 theme_override_constants/margin_bottom = 10
 
-[node name="LineEdit" type="LineEdit" parent="CanvasLayer/Control/VBoxContainer/HBoxContainer/MarginContainer2"]
-custom_minimum_size = Vector2(40, 20)
+[node name="TextEntry" type="TextEdit" parent="CanvasLayer/Control/VBoxContainer/HBoxContainer/MarginContainer2"]
 layout_mode = 2
-size_flags_horizontal = 3
+wrap_mode = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -114,8 +114,8 @@ one_shot = true
 wait_time = 3.0
 autostart = true
 
-[connection signal="text_changed" from="CanvasLayer/Control/VBoxContainer/HBoxContainer/MarginContainer2/LineEdit" to="." method="_on_line_edit_text_changed"]
-[connection signal="text_submitted" from="CanvasLayer/Control/VBoxContainer/HBoxContainer/MarginContainer2/LineEdit" to="." method="_on_line_edit_text_submitted"]
+[connection signal="gui_input" from="CanvasLayer/Control/VBoxContainer/HBoxContainer/MarginContainer2/TextEntry" to="." method="_on_text_edit_gui_input"]
+[connection signal="text_changed" from="CanvasLayer/Control/VBoxContainer/HBoxContainer/MarginContainer2/TextEntry" to="." method="_on_text_edit_text_changed"]
 [connection signal="pressed" from="CanvasLayer/Control/VBoxContainer/HBoxContainer/MarginContainer/Button" to="." method="_on_button_pressed"]
 [connection signal="timeout" from="WebSocketRetryTimer" to="." method="_on_retry_timer_timeout"]
 [connection signal="timeout" from="PingTimer" to="." method="_on_ping_timer_timeout"]

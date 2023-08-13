@@ -11,7 +11,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_7yigd")
-chat_label = NodePath("HBoxContainer/MarginContainer/Chat_Label")
+chat_label = NodePath("HBoxContainer/MarginContainer/RichChat_Label")
 name_label = NodePath("HBoxContainer/Name_Label")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
@@ -31,6 +31,15 @@ layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/margin_bottom = 10
 
+[node name="RichChat_Label" type="RichTextLabel" parent="HBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 40
+theme_override_font_sizes/bold_font_size = 40
+theme_override_font_sizes/italics_font_size = 40
+theme_override_font_sizes/bold_italics_font_size = 40
+theme_override_font_sizes/mono_font_size = 40
+fit_content = true
+
 [node name="Chat_Label" type="Label" parent="HBoxContainer/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
@@ -39,4 +48,4 @@ theme_override_colors/font_color = Color(0.85098, 0.85098, 0.85098, 1)
 theme_override_font_sizes/font_size = 40
 autowrap_mode = 3
 
-[connection signal="resized" from="HBoxContainer/MarginContainer/Chat_Label" to="." method="_on_chat_label_resized"]
+[connection signal="resized" from="HBoxContainer/MarginContainer/RichChat_Label" to="." method="_on_rich_chat_label_resized"]

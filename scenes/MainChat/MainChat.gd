@@ -18,7 +18,7 @@ var websocket_scene_instances = []
 
 @export var retry_timer: Timer
 
-@export var text_input: LineEdit
+@export var text_input: TextEdit
 @export var chat_container: VBoxContainer
 @export var connection_indicator: TextureRect
 @export var disconnect_player: AudioStreamPlayer
@@ -165,6 +165,7 @@ func _on_retry_timer_timeout():
 
 func is_text_clear(text) -> bool:
 	var text_clear = text.replace(" ","")
+	text_clear = text.replace("\n","")
 	if text_clear == "":
 		#only spaces dont send
 		return true
@@ -172,11 +173,12 @@ func is_text_clear(text) -> bool:
 	
 func _on_line_edit_text_changed(new_text):
 	var state = socket.get_ready_state()
+	if is_text_clear(new_text):
+		return
 	if state == WebSocketPeer.STATE_OPEN:
 		# send the json object stringified
 		chat.message = new_text
-		if !is_text_clear(new_text):
-			socket.send_text(JSON.stringify(chat))
+		socket.send_text(JSON.stringify(chat))
 
 
 
@@ -203,3 +205,21 @@ func _on_ping_timer_timeout():
 	if state == WebSocketPeer.STATE_OPEN:
 		print("Sending ping")
 		socket.send_text("__ping__")
+
+
+func _on_text_edit_gui_input(event):
+	if event is InputEventKey:
+		var keys_pressed_string = OS.get_keycode_string(event.get_key_label_with_modifiers())
+		if event.pressed and event.keycode == KEY_ENTER and "Shift" not in keys_pressed_string:
+			var new_text = text_input.text
+			_on_line_edit_text_submitted(new_text)
+		elif event.pressed and event.keycode == KEY_ENTER and "Shift" in keys_pressed_string:
+			text_input.insert_text_at_caret("\n")
+			
+
+
+
+func _on_text_edit_text_changed():
+	if is_text_clear(text_input.text):
+		text_input.text = "" 
+	_on_line_edit_text_changed(text_input.text)
