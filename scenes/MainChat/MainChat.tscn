@@ -1,9 +1,10 @@
-[gd_scene load_steps=6 format=3 uid="uid://dg8j4isgoexls"]
+[gd_scene load_steps=7 format=3 uid="uid://dg8j4isgoexls"]
 
 [ext_resource type="Script" path="res://scenes/MainChat/MainChat.gd" id="1_i0ssy"]
 [ext_resource type="Texture2D" uid="uid://1vnf3pbmwuam" path="res://assets/images/disconnect.svg" id="2_jhovj"]
 [ext_resource type="FontVariation" uid="uid://c7afrdiv4foeo" path="res://assets/font/Roboto.tres" id="3_4h8rv"]
 [ext_resource type="AudioStream" uid="uid://b1ab6l0tv3coe" path="res://assets/sounds/disconnect.mp3" id="3_oskle"]
+[ext_resource type="Script" path="res://scenes/MainChat/ChatScroll.gd" id="4_c4ub4"]
 [ext_resource type="AudioStream" uid="uid://x4e1hwsqbmrb" path="res://assets/sounds/connect.mp3" id="4_dbh4k"]
 
 [node name="Node2D" type="Node2D" node_paths=PackedStringArray("retry_timer", "text_input", "chat_container", "connection_indicator", "disconnect_player", "connect_player", "url_label")]
@@ -44,10 +45,9 @@ texture = ExtResource("2_jhovj")
 stretch_mode = 3
 
 [node name="Url_Label" type="Label" parent="CanvasLayer/Control/VBoxContainer/StatusBar"]
-visible = false
 layout_mode = 2
 theme_override_fonts/font = ExtResource("3_4h8rv")
-theme_override_font_sizes/font_size = 40
+theme_override_font_sizes/font_size = 20
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/VBoxContainer/StatusBar"]
 layout_mode = 2
@@ -65,6 +65,12 @@ text = "Options"
 [node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/Control/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+follow_focus = true
+script = ExtResource("4_c4ub4")
+
+[node name="ScrollCheckTimer" type="Timer" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer"]
+wait_time = 0.2
+autostart = true
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/Control/VBoxContainer/ScrollContainer"]
 layout_mode = 2
@@ -114,6 +120,7 @@ one_shot = true
 wait_time = 3.0
 autostart = true
 
+[connection signal="timeout" from="CanvasLayer/Control/VBoxContainer/ScrollContainer/ScrollCheckTimer" to="CanvasLayer/Control/VBoxContainer/ScrollContainer" method="_on_scroll_check_timer_timeout"]
 [connection signal="gui_input" from="CanvasLayer/Control/VBoxContainer/HBoxContainer/MarginContainer2/TextEntry" to="." method="_on_text_edit_gui_input"]
 [connection signal="text_changed" from="CanvasLayer/Control/VBoxContainer/HBoxContainer/MarginContainer2/TextEntry" to="." method="_on_text_edit_text_changed"]
 [connection signal="pressed" from="CanvasLayer/Control/VBoxContainer/HBoxContainer/MarginContainer/Button" to="." method="_on_button_pressed"]

@@ -1,0 +1,23 @@
+extends ScrollContainer
+
+var max_scroll_length = 0 
+var at_bottom = false
+@onready var scrollbar = get_v_scroll_bar()
+
+func _ready(): 
+	scrollbar.changed.connect(handle_scrollbar_changed)
+	max_scroll_length = scrollbar.max_value
+
+func handle_scrollbar_changed():
+	if not at_bottom:
+		return
+	if max_scroll_length != scrollbar.max_value: 
+		max_scroll_length = scrollbar.max_value 
+	self.scroll_vertical = max_scroll_length
+
+
+func _on_scroll_check_timer_timeout():
+	if scrollbar.max_value - scrollbar.page == scrollbar.value:
+		at_bottom = true
+	else:
+		at_bottom = false
