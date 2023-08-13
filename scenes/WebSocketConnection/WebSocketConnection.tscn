@@ -4,4 +4,3 @@
 
 [node name="WebSocketConnection" type="Node2D"]
 script = ExtResource("1_u6n87")
-websocket_url = "ws://localhost:8089/ws"

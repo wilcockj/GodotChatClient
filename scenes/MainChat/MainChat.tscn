@@ -7,7 +7,7 @@
 [ext_resource type="Script" path="res://scenes/MainChat/ChatScroll.gd" id="4_c4ub4"]
 [ext_resource type="AudioStream" uid="uid://x4e1hwsqbmrb" path="res://assets/sounds/connect.mp3" id="4_dbh4k"]
 
-[node name="Node2D" type="Node2D" node_paths=PackedStringArray("retry_timer", "text_input", "chat_container", "connection_indicator", "disconnect_player", "connect_player", "url_label")]
+[node name="Node2D" type="Node2D" node_paths=PackedStringArray("retry_timer", "text_input", "chat_container", "connection_indicator", "disconnect_player", "connect_player", "url_label", "gui_vbox")]
 script = ExtResource("1_i0ssy")
 retry_timer = NodePath("WebSocketRetryTimer")
 text_input = NodePath("CanvasLayer/Control/VBoxContainer/HBoxContainer/MarginContainer2/TextEntry")
@@ -16,6 +16,7 @@ connection_indicator = NodePath("CanvasLayer/Control/VBoxContainer/StatusBar/Con
 disconnect_player = NodePath("DisconnectPlayer")
 connect_player = NodePath("ConnectPlayer")
 url_label = NodePath("CanvasLayer/Control/VBoxContainer/StatusBar/Url_Label")
+gui_vbox = NodePath("CanvasLayer/Control/VBoxContainer")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 

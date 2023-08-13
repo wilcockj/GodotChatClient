@@ -15,7 +15,8 @@ var retry_delay = 1.0  # Start with a delay of 1 second
 var max_retry_delay = 16.0  # The maximum delay of 16 seconds
 var websocket_url = ""
 var websocket_scene_instances = []
-
+var virtual_keyboard_handled = false
+var virtual_keyboard_height = 0
 @export var retry_timer: Timer
 
 @export var text_input: TextEdit
@@ -24,6 +25,7 @@ var websocket_scene_instances = []
 @export var disconnect_player: AudioStreamPlayer
 @export var connect_player: AudioStreamPlayer
 @export var url_label: Label
+@export var gui_vbox: VBoxContainer
 @onready var connection_image = preload("res://assets/images/connect.svg")
 @onready var disconnection_image = preload("res://assets/images/disconnect.svg")
 @onready var websocket_scene = preload("res://scenes/WebSocketConnection/WebSocketConnection.tscn")
@@ -49,6 +51,12 @@ func _ready():
 	chat.timestamp = Time.get_unix_time_from_system()
 	chat.uuid = uuid_util.generate_uuid()
 	url_label.text = "Connected to: " + socket.get_requested_url()
+
+func is_virtual_keyboard_shown():
+	if DisplayServer.has_feature(DisplayServer.FEATURE_VIRTUAL_KEYBOARD):
+		return DisplayServer.virtual_keyboard_get_height() != 0
+	else:
+		return 0
 
 func contains_chat_id(search_id):
 	for child in chat_container.get_children():
@@ -96,12 +104,32 @@ func _delete_instances_except(instances,index_to_keep):
 	instances.clear()
 	instances.append(websocket_scene_instance)
 
+func _adjust_gui_vbox_size(delta_height: float) -> void:
+	gui_vbox.size.y += delta_height
+	
+func _subtract_keyboard_height_deferred():
+	virtual_keyboard_height = DisplayServer.virtual_keyboard_get_height()
+	_adjust_gui_vbox_size(-virtual_keyboard_height)
+	
 func _process(_delta):
+	if is_virtual_keyboard_shown() and not virtual_keyboard_handled:
+		var timer = Timer.new()
+		timer.wait_time = 1
+		timer.one_shot = true
+		# Add the timer to the current scene
+		self.add_child(timer)
+		# Start the timer
+		timer.start()
+		# Connect the timer's timeout signal to a function
+		timer.connect("timeout",_subtract_keyboard_height_deferred)
+		virtual_keyboard_handled = true
+	elif not is_virtual_keyboard_shown() and virtual_keyboard_handled:
+		_adjust_gui_vbox_size(virtual_keyboard_height)
+		virtual_keyboard_handled = false
+		
 	socket.poll()
 	var state = socket.get_ready_state()
-	if state == WebSocketPeer.STATE_OPEN:
-		
-		
+	if state == WebSocketPeer.STATE_OPEN:		
 		if connection_state == DISCONNECTED:
 			connection_state = CONNECTED
 			play_connect_sound()
