@@ -16,6 +16,7 @@ var websocket_url = ""
 var websocket_scene_instances = []
 var virtual_keyboard_handled = false
 var virtual_keyboard_height = 0
+var bottom_menu_size = 0
 @export var retry_timer: Timer
 
 @export var text_input: TextEdit
@@ -104,26 +105,37 @@ func _delete_instances_except(instances,index_to_keep):
 	instances.append(websocket_scene_instance)
 
 func _adjust_gui_vbox_size(delta_height: float) -> void:
+	var temp_y = gui_vbox.size.y + delta_height
+	if temp_y > DisplayServer.get_display_safe_area().size.y:
+		#too big
+		return
 	gui_vbox.size.y += delta_height
 	
-func _subtract_keyboard_height_deferred():
+func _subtract_keyboard_height_deferred(timer):
+	var cutout = DisplayServer.get_display_cutouts()
+	var safe = DisplayServer.get_display_safe_area()
 	virtual_keyboard_height = DisplayServer.virtual_keyboard_get_height()
-	_adjust_gui_vbox_size(-virtual_keyboard_height)
+	_adjust_gui_vbox_size(-virtual_keyboard_height+bottom_menu_size)
+	timer.queue_free()
 	
 func _process(_delta):
 	if is_virtual_keyboard_shown() and not virtual_keyboard_handled:
+		bottom_menu_size = DisplayServer.get_display_safe_area().size.y - gui_vbox.size.y
+		var bottom_padding = 20
+		bottom_menu_size -= bottom_padding
 		var timer = Timer.new()
-		timer.wait_time = 1
+		timer.wait_time = 0.2
 		timer.one_shot = true
 		# Add the timer to the current scene
 		self.add_child(timer)
 		# Start the timer
 		timer.start()
 		# Connect the timer's timeout signal to a function
-		timer.connect("timeout",_subtract_keyboard_height_deferred)
+		timer.connect("timeout",_subtract_keyboard_height_deferred.bind(timer))
+		#_subtract_keyboard_height_deferred()
 		virtual_keyboard_handled = true
 	elif not is_virtual_keyboard_shown() and virtual_keyboard_handled:
-		_adjust_gui_vbox_size(virtual_keyboard_height)
+		_adjust_gui_vbox_size(virtual_keyboard_height-bottom_menu_size)
 		virtual_keyboard_handled = false
 		
 	socket.poll()
