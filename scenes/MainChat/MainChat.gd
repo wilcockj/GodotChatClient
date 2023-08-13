@@ -29,7 +29,7 @@ var websocket_scene_instances = []
 
 @onready var label_scene = preload("res://scenes/Chat/Chat.tscn")
 
-var uuid_util = preload("res://common/uuid.gd").new()
+var uuid_util = preload("res://lib/uuid.gd").new()
 
 # make chat a class with methods to send and set timestamp etc.
 var chat = {"finished": false, "message": "", "userid": "", "username": "", "uuid":"", "timestamp": 0}
@@ -37,7 +37,6 @@ var chat = {"finished": false, "message": "", "userid": "", "username": "", "uui
 var socket: WebSocketPeer
 var websocket_scene_instance
 func _ready():
-	print(uuid_util.generate_uuid())
 	websocket_scene_instance = websocket_scene.instantiate()
 	add_child(websocket_scene_instance)
 	socket = websocket_scene_instance.socket
