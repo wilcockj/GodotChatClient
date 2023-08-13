@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="WebSocketGroupChatClient"
-run/main_scene="res://node_2d.tscn"
+run/main_scene="res://scenes/MainChat/MainChat.tscn"
 config/features=PackedStringArray("4.1", "Forward Plus")
 config/icon="res://icon.svg"
 
@@ -21,7 +21,7 @@ window/handheld/orientation=1
 
 [gui]
 
-theme/custom_font="res://Roboto.tres"
+theme/custom_font="res://assets/font/Roboto.tres"
 
 [rendering]
 

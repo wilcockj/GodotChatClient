@@ -23,17 +23,13 @@ var websocket_scene_instances = []
 @export var connection_indicator: TextureRect
 @export var disconnect_player: AudioStreamPlayer
 @export var connect_player: AudioStreamPlayer
-@onready var connection_image = preload("res://images/connect.svg")
-@onready var disconnection_image = preload("res://images/disconnect.svg")
-@onready var websocket_scene = preload("res://WebSocketConnection.tscn")
-# The URL we will connect to
-#@export var websocket_url = "wss://swiftnotes.net/ws"
-# Audio player for connect and disconnect
-@export var audio_player: AudioStreamPlayer
+@onready var connection_image = preload("res://assets/images/connect.svg")
+@onready var disconnection_image = preload("res://assets/images/disconnect.svg")
+@onready var websocket_scene = preload("res://scenes/WebSocketConnection/WebSocketConnection.tscn")
 
-@onready var label_scene = preload("res://Chat.tscn")
+@onready var label_scene = preload("res://scenes/Chat/Chat.tscn")
 
-var uuid_util = preload('res://uuid.gd').new()
+var uuid_util = preload("res://common/uuid.gd").new()
 
 # make chat a class with methods to send and set timestamp etc.
 var chat = {"finished": false, "message": "", "userid": "", "username": "", "uuid":"", "timestamp": 0}
@@ -91,7 +87,12 @@ func _delete_instances_except(instances,index_to_keep):
 		#print(i.bundled)
 		if typeof(i) == TYPE_OBJECT:
 			if i != index_to_keep:
-				_Garbage_Collect_Timeout(i)
+				var wr = weakref(i)
+				if (!wr.get_ref()):
+					pass
+				else:
+					# not freed
+					i.queue_free()
 	instances.clear()
 	instances.append(websocket_scene_instance)
 
@@ -107,7 +108,7 @@ func _process(_delta):
 			connection_indicator.texture = connection_image
 			retry_timer.stop()
 			_delete_instances_except(websocket_scene_instances,websocket_scene_instance)
-			
+			init_backoff_values()
 			#delete all but current websocket node
 			#connection_indicator.
  
@@ -141,49 +142,13 @@ func _process(_delta):
 			play_disconnect_sound()
 			connection_indicator.texture = disconnection_image
 			socket.close(-1)
-			var timer = Timer.new()
-			# Configure the timer
-			timer.wait_time = 10
-			timer.one_shot = true
-			# Add the timer to the current scene
-			self.add_child(timer)
-			# Start the timer
-			timer.start()
-			# Connect the timer's timeout signal to a function
-			timer.connect("timeout",_Garbage_Collect_Timeout.bind(websocket_scene_instance))
 			retry_timer.start(retry_delay)
 			print("WebSocket closed with code: %d, reason %s. Clean: %s" % [code, reason, code != -1])
 		
 		# has to be -1 to close immediately
 
-
-		#$WebSocketConnection.socket = null
-		#$WebSocketConnection.queue_free()
-		
-		# TODO free the websocket connection after 10 seconds
-		# need to add actual retry connecting with backoff
-#		if current_retry == 0:
-#			websocket_scene_instance = load("res://WebSocketConnection.tscn").instantiate()
-#			add_child(websocket_scene_instance)
-#			socket = websocket_scene_instance.socket
-			
-
-func _Garbage_Collect_Timeout(node):
-	var wr = weakref(node)
-	if (!wr.get_ref()):
-		# freed
-		pass
-	else:
-		# not freed
-		node.queue_free()
-		
-
 func retry_connecting():
 	if connection_state == DISCONNECTED:
-		websocket_scene_instance = load("res://WebSocketConnection.tscn").instantiate()
-		add_child(websocket_scene_instance)
-		websocket_scene_instances.append(websocket_scene_instance)
-		socket = websocket_scene_instance.socket
 		current_retry += 1
 		print("Attempting to reconnect to %s. Try number: %d" % [websocket_url, current_retry])
 		# Try to connect again

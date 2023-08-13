@@ -1,19 +1,18 @@
 [gd_scene load_steps=5 format=3 uid="uid://dg8j4isgoexls"]
 
-[ext_resource type="Script" path="res://Node2D.gd" id="1_vx7re"]
-[ext_resource type="Texture2D" uid="uid://1vnf3pbmwuam" path="res://images/disconnect.svg" id="2_uor1j"]
-[ext_resource type="AudioStream" uid="uid://b1ab6l0tv3coe" path="res://sounds/disconnect.mp3" id="3_gee5h"]
-[ext_resource type="AudioStream" uid="uid://x4e1hwsqbmrb" path="res://sounds/connect.mp3" id="4_bc5nq"]
+[ext_resource type="Script" path="res://scenes/MainChat/MainChat.gd" id="1_i0ssy"]
+[ext_resource type="Texture2D" uid="uid://1vnf3pbmwuam" path="res://assets/images/disconnect.svg" id="2_jhovj"]
+[ext_resource type="AudioStream" uid="uid://b1ab6l0tv3coe" path="res://assets/sounds/disconnect.mp3" id="3_oskle"]
+[ext_resource type="AudioStream" uid="uid://x4e1hwsqbmrb" path="res://assets/sounds/connect.mp3" id="4_dbh4k"]
 
-[node name="Node2D" type="Node2D" node_paths=PackedStringArray("retry_timer", "text_input", "chat_container", "connection_indicator", "disconnect_player", "connect_player", "audio_player")]
-script = ExtResource("1_vx7re")
+[node name="Node2D" type="Node2D" node_paths=PackedStringArray("retry_timer", "text_input", "chat_container", "connection_indicator", "disconnect_player", "connect_player")]
+script = ExtResource("1_i0ssy")
 retry_timer = NodePath("WebSocketRetryTimer")
 text_input = NodePath("CanvasLayer/Control/VBoxContainer/HBoxContainer/MarginContainer2/LineEdit")
 chat_container = NodePath("CanvasLayer/Control/VBoxContainer/ScrollContainer/VBoxContainer")
 connection_indicator = NodePath("CanvasLayer/Control/VBoxContainer/StatusBar/Connection_Indicator")
 disconnect_player = NodePath("DisconnectPlayer")
 connect_player = NodePath("ConnectPlayer")
-audio_player = NodePath("ConnectPlayer")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -39,7 +38,7 @@ size_flags_vertical = 0
 
 [node name="Connection_Indicator" type="TextureRect" parent="CanvasLayer/Control/VBoxContainer/StatusBar"]
 layout_mode = 2
-texture = ExtResource("2_uor1j")
+texture = ExtResource("2_jhovj")
 stretch_mode = 3
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/VBoxContainer/StatusBar"]
@@ -94,11 +93,11 @@ text = "Send Message
 "
 
 [node name="DisconnectPlayer" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("3_gee5h")
+stream = ExtResource("3_oskle")
 volume_db = -14.0
 
 [node name="ConnectPlayer" type="AudioStreamPlayer" parent="."]
-stream = ExtResource("4_bc5nq")
+stream = ExtResource("4_dbh4k")
 volume_db = -14.0
 
 [node name="WebSocketRetryTimer" type="Timer" parent="."]

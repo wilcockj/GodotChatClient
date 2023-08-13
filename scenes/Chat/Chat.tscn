@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://6ljq22yxfido"]
 
-[ext_resource type="Script" path="res://Chat.gd" id="1_0cply"]
+[ext_resource type="Script" path="res://scenes/Chat/Chat.gd" id="1_7yigd"]
 
 [node name="Control" type="Control" node_paths=PackedStringArray("chat_label", "name_label")]
 custom_minimum_size = Vector2(0, 50)
@@ -10,7 +10,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_0cply")
+script = ExtResource("1_7yigd")
 chat_label = NodePath("HBoxContainer/MarginContainer/Chat_Label")
 name_label = NodePath("HBoxContainer/Name_Label")
 

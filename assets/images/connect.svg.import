@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://1vnf3pbmwuam"
-path="res://.godot/imported/disconnect.svg-686d8be0ef917d674083f938b65a1de4.ctex"
+uid="uid://bky86wubnc3fk"
+path="res://.godot/imported/connect.svg-52669d201149730d70ca78d44770f63b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/disconnect.svg"
-dest_files=["res://.godot/imported/disconnect.svg-686d8be0ef917d674083f938b65a1de4.ctex"]
+source_file="res://assets/images/connect.svg"
+dest_files=["res://.godot/imported/connect.svg-52669d201149730d70ca78d44770f63b.ctex"]
 
 [params]
 
