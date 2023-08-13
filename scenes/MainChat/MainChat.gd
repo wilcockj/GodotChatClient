@@ -1,11 +1,10 @@
 extends Node2D
 
+#add bolding of actively typing message
+#remove bolding once completed
 
-#todo change size of the typing box
-#so mobile ui makes more sense
+#clean up state machine logic for virtual keyboard
 
-#make message box follow above keyboard 
-#on mobile, no idea how to do that
 enum {DISCONNECTED, CONNECTED} 
 var connection_state = DISCONNECTED
 # Variables related to retry connection and backoff
