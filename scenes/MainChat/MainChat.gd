@@ -120,20 +120,21 @@ func _subtract_keyboard_height_deferred(timer):
 	
 func _process(_delta):
 	if is_virtual_keyboard_shown() and not virtual_keyboard_handled:
-		bottom_menu_size = DisplayServer.get_display_safe_area().size.y - gui_vbox.size.y
-		var bottom_padding = 20
-		bottom_menu_size -= bottom_padding
-		var timer = Timer.new()
-		timer.wait_time = 0.2
-		timer.one_shot = true
-		# Add the timer to the current scene
-		self.add_child(timer)
-		# Start the timer
-		timer.start()
-		# Connect the timer's timeout signal to a function
-		timer.connect("timeout",_subtract_keyboard_height_deferred.bind(timer))
-		#_subtract_keyboard_height_deferred()
-		virtual_keyboard_handled = true
+		if DisplayServer.virtual_keyboard_get_height() > 30:
+			bottom_menu_size = DisplayServer.get_display_safe_area().size.y - gui_vbox.size.y
+			var bottom_padding = 20
+			bottom_menu_size -= bottom_padding
+			var timer = Timer.new()
+			timer.wait_time = 0.3 # have to wait for keyboard to be fully deployed
+			timer.one_shot = true
+			# Add the timer to the current scene
+			self.add_child(timer)
+			# Start the timer
+			timer.start()
+			# Connect the timer's timeout signal to a function
+			timer.connect("timeout",_subtract_keyboard_height_deferred.bind(timer))
+			#_subtract_keyboard_height_deferred()
+			virtual_keyboard_handled = true
 	elif not is_virtual_keyboard_shown() and virtual_keyboard_handled:
 		_adjust_gui_vbox_size(virtual_keyboard_height-bottom_menu_size)
 		virtual_keyboard_handled = false

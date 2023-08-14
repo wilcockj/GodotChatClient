@@ -49,7 +49,7 @@ stretch_mode = 3
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_fonts/font = ExtResource("3_4h8rv")
-theme_override_font_sizes/font_size = 20
+theme_override_font_sizes/font_size = 40
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/VBoxContainer/StatusBar"]
 layout_mode = 2
@@ -62,6 +62,7 @@ theme_override_constants/margin_right = 10
 custom_minimum_size = Vector2(80, 50)
 layout_mode = 2
 size_flags_horizontal = 8
+theme_override_font_sizes/font_size = 40
 text = "Options"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer/Control/VBoxContainer"]
@@ -93,6 +94,7 @@ theme_override_constants/margin_bottom = 10
 
 [node name="TextEntry" type="TextEdit" parent="CanvasLayer/Control/VBoxContainer/HBoxContainer/MarginContainer2"]
 layout_mode = 2
+theme_override_font_sizes/font_size = 40
 wrap_mode = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="CanvasLayer/Control/VBoxContainer/HBoxContainer"]
@@ -104,6 +106,7 @@ theme_override_constants/margin_bottom = 10
 layout_mode = 2
 size_flags_horizontal = 2
 size_flags_vertical = 4
+theme_override_font_sizes/font_size = 40
 text = "Send Message
 "
 
