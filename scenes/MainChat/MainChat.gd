@@ -17,6 +17,8 @@ var websocket_scene_instances = []
 var virtual_keyboard_handled = false
 var virtual_keyboard_height = 0
 var bottom_menu_size = 0
+var opened_once = false # variable to check if ever successfully connected
+						# to enable retry if first connection fails
 @export var retry_timer: Timer
 
 @export var text_input: TextEdit
@@ -112,8 +114,6 @@ func _adjust_gui_vbox_size(delta_height: float) -> void:
 	gui_vbox.size.y += delta_height
 	
 func _subtract_keyboard_height_deferred(timer):
-	var cutout = DisplayServer.get_display_cutouts()
-	var safe = DisplayServer.get_display_safe_area()
 	virtual_keyboard_height = DisplayServer.virtual_keyboard_get_height()
 	_adjust_gui_vbox_size(-virtual_keyboard_height+bottom_menu_size)
 	timer.queue_free()
@@ -141,6 +141,7 @@ func _process(_delta):
 	socket.poll()
 	var state = socket.get_ready_state()
 	if state == WebSocketPeer.STATE_OPEN:		
+		opened_once = true
 		if connection_state == DISCONNECTED:
 			connection_state = CONNECTED
 			play_connect_sound()
@@ -176,7 +177,8 @@ func _process(_delta):
 		var code = socket.get_close_code()
 		var reason = socket.get_close_reason()
 		
-		if connection_state == CONNECTED:
+		if connection_state == CONNECTED or not opened_once:
+			opened_once = true
 			connection_state = DISCONNECTED
 			play_disconnect_sound()
 			connection_indicator.texture = disconnection_image
