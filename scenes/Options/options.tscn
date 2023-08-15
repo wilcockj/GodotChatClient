@@ -88,6 +88,7 @@ layout_mode = 2
 size_flags_vertical = 6
 
 [node name="ExitButton" type="Button" parent="MarginContainer/TabContainer/General/VBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -95,6 +96,15 @@ theme_override_font_sizes/font_size = 40
 text = "Exit
 "
 
+[node name="ExitButton" type="Button" parent="MarginContainer"]
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 0
+theme_override_font_sizes/font_size = 40
+text = "X"
+
 [connection signal="text_submitted" from="MarginContainer/TabContainer/General/VBoxContainer/HBoxContainer/LineEdit" to="." method="_on_line_edit_text_submitted"]
 [connection signal="pressed" from="MarginContainer/TabContainer/General/VBoxContainer/HBoxContainer/MarginContainer2/SetNameButton" to="." method="_on_set_name_button_pressed"]
 [connection signal="pressed" from="MarginContainer/TabContainer/General/VBoxContainer/ExitButton" to="." method="_on_exit_button_pressed"]
+[connection signal="pressed" from="MarginContainer/ExitButton" to="." method="_on_exit_button_pressed"]

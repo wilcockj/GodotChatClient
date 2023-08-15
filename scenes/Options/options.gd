@@ -3,6 +3,7 @@ extends Control
 @export var name_entry: LineEdit
 signal name_changed(name)
 signal exited_options()
+
 func _on_exit_button_pressed():
 	emit_signal("exited_options")
 	queue_free()
