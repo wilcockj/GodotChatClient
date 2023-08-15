@@ -55,7 +55,7 @@ func _ready():
 	chat.finished = false
 	chat.timestamp = Time.get_unix_time_from_system()
 	chat.uuid = uuid_util.generate_uuid()
-	url_label.text = "Connected to: " + socket.get_requested_url()
+	url_label.text = "Server: " + socket.get_requested_url()
 	set_name_label(Globals.username)
 
 
