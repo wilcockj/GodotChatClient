@@ -1,9 +1,9 @@
 extends Control
 
 @export var name_entry: LineEdit
-
+signal name_changed(name)
 func _on_exit_button_pressed():
-	get_tree().change_scene_to_file("res://scenes/MainChat/MainChat.tscn")
+	queue_free()
 
 
 func _on_set_name_button_pressed():
@@ -12,3 +12,4 @@ func _on_set_name_button_pressed():
 
 func _on_line_edit_text_submitted(new_text):
 	Globals.username = new_text
+	emit_signal("name_changed", new_text)

@@ -27,11 +27,13 @@ var opened_once = false # variable to check if ever successfully connected
 @export var disconnect_player: AudioStreamPlayer
 @export var connect_player: AudioStreamPlayer
 @export var url_label: Label
-@export var gui_vbox: VBoxContainer
+@export var gui_control: Control
 @export var name_label: Label
+@export var canvas_layer: CanvasLayer
 @onready var connection_image = preload("res://assets/images/connect.svg")
 @onready var disconnection_image = preload("res://assets/images/disconnect.svg")
 @onready var websocket_scene = preload("res://scenes/WebSocketConnection/WebSocketConnection.tscn")
+@onready var options_scene = preload("res://scenes/Options/options.tscn")
 
 @onready var label_scene = preload("res://scenes/Chat/Chat.tscn")
 
@@ -112,11 +114,11 @@ func _delete_instances_except(instances,index_to_keep):
 	instances.append(websocket_scene_instance)
 
 func _adjust_gui_vbox_size(delta_height: float) -> void:
-	var temp_y = gui_vbox.size.y + delta_height
+	var temp_y = gui_control.size.y + delta_height
 	if temp_y > DisplayServer.get_display_safe_area().size.y:
 		#too big
 		return
-	gui_vbox.size.y += delta_height
+	gui_control.size.y += delta_height
 	
 func _subtract_keyboard_height_deferred(timer):
 	virtual_keyboard_height = DisplayServer.virtual_keyboard_get_height()
@@ -126,7 +128,7 @@ func _subtract_keyboard_height_deferred(timer):
 func _process(_delta):
 	if is_virtual_keyboard_shown() and not virtual_keyboard_handled:
 		if DisplayServer.virtual_keyboard_get_height() > 30:
-			bottom_menu_size = DisplayServer.get_display_safe_area().size.y - gui_vbox.size.y
+			bottom_menu_size = DisplayServer.get_display_safe_area().size.y - gui_control.size.y
 			var bottom_padding = 20
 			bottom_menu_size -= bottom_padding
 			var timer = Timer.new()
@@ -273,4 +275,7 @@ func _on_text_edit_text_changed():
 
 
 func _on_options_button_pressed():
-	get_tree().change_scene_to_file("res://scenes/Options/options.tscn")
+	var opt = options_scene.instantiate()
+	opt.connect("name_changed", set_name_label)
+	gui_control.add_child(opt)
+	
