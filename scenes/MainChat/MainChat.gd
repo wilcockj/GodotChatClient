@@ -61,6 +61,7 @@ func _ready():
 
 func set_name_label(name):
 	name_label.text = name
+	chat.username = name
 
 func is_virtual_keyboard_shown():
 	if DisplayServer.has_feature(DisplayServer.FEATURE_VIRTUAL_KEYBOARD):
