@@ -1,7 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://o3apbi2w027n"]
+[gd_scene load_steps=2 format=3 uid="uid://o3apbi2w027n"]
 
 [ext_resource type="Script" path="res://scenes/Options/options.gd" id="1_susqt"]
-[ext_resource type="Texture2D" uid="uid://b5w4uhmpcoqg2" path="res://lib/aj.jpg" id="2_lxv0k"]
 
 [node name="Options" type="Control" node_paths=PackedStringArray("name_entry")]
 layout_mode = 3
@@ -12,10 +11,6 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_susqt")
 name_entry = NodePath("MarginContainer/TabContainer/General/VBoxContainer/HBoxContainer/LineEdit")
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-visible = false
-texture = ExtResource("2_lxv0k")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
