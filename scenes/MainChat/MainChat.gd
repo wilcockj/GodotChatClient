@@ -130,6 +130,7 @@ func _subtract_keyboard_height_deferred(timer):
 func handle_virtual_keyboard():
 	if is_virtual_keyboard_shown() and not virtual_keyboard_handled:
 		if DisplayServer.virtual_keyboard_get_height() > 30:
+			# bottom menu with back button and home button height
 			bottom_menu_size = DisplayServer.get_display_safe_area().size.y - gui_control.size.y
 			var bottom_padding = 20
 			bottom_menu_size -= bottom_padding
@@ -142,7 +143,6 @@ func handle_virtual_keyboard():
 			timer.start()
 			# Connect the timer's timeout signal to a function
 			timer.connect("timeout",_subtract_keyboard_height_deferred.bind(timer))
-			#_subtract_keyboard_height_deferred()
 			virtual_keyboard_handled = true
 	elif not is_virtual_keyboard_shown() and virtual_keyboard_handled:
 		_adjust_gui_vbox_size(virtual_keyboard_height-bottom_menu_size)
