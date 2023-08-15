@@ -28,6 +28,7 @@ var opened_once = false # variable to check if ever successfully connected
 @export var connect_player: AudioStreamPlayer
 @export var url_label: Label
 @export var gui_vbox: VBoxContainer
+@export var name_label: Label
 @onready var connection_image = preload("res://assets/images/connect.svg")
 @onready var disconnection_image = preload("res://assets/images/disconnect.svg")
 @onready var websocket_scene = preload("res://scenes/WebSocketConnection/WebSocketConnection.tscn")
@@ -35,7 +36,6 @@ var opened_once = false # variable to check if ever successfully connected
 @onready var label_scene = preload("res://scenes/Chat/Chat.tscn")
 
 var uuid_util = preload("res://lib/uuid.gd").new()
-
 # make chat a class with methods to send and set timestamp etc.
 var chat = {"finished": false, "message": "", "userid": "", "username": "", "uuid":"", "timestamp": 0}
 # Our WebSocketClient instance
@@ -48,11 +48,16 @@ func _ready():
 	websocket_url = websocket_scene_instance.websocket_url
 	
 	chat.userid = uuid_util.generate_uuid()
-	chat.username = "JohnGodot"
+	chat.username = Globals.username
 	chat.finished = false
 	chat.timestamp = Time.get_unix_time_from_system()
 	chat.uuid = uuid_util.generate_uuid()
 	url_label.text = "Connected to: " + socket.get_requested_url()
+	set_name_label(Globals.username)
+
+
+func set_name_label(name):
+	name_label.text = name
 
 func is_virtual_keyboard_shown():
 	if DisplayServer.has_feature(DisplayServer.FEATURE_VIRTUAL_KEYBOARD):
@@ -265,3 +270,7 @@ func _on_text_edit_text_changed():
 	if is_text_clear(text_input.text):
 		text_input.text = "" 
 	_on_line_edit_text_changed(text_input.text)
+
+
+func _on_options_button_pressed():
+	get_tree().change_scene_to_file("res://scenes/Options/options.tscn")
