@@ -30,6 +30,7 @@ var opened_once = false # variable to check if ever successfully connected
 @export var gui_control: Control
 @export var name_label: Label
 @export var canvas_layer: CanvasLayer
+@export var blur_rect: ColorRect
 @onready var connection_image = preload("res://assets/images/connect.svg")
 @onready var disconnection_image = preload("res://assets/images/disconnect.svg")
 @onready var websocket_scene = preload("res://scenes/WebSocketConnection/WebSocketConnection.tscn")
@@ -125,7 +126,7 @@ func _subtract_keyboard_height_deferred(timer):
 	_adjust_gui_vbox_size(-virtual_keyboard_height+bottom_menu_size)
 	timer.queue_free()
 	
-func _process(_delta):
+func handle_virtual_keyboard():
 	if is_virtual_keyboard_shown() and not virtual_keyboard_handled:
 		if DisplayServer.virtual_keyboard_get_height() > 30:
 			bottom_menu_size = DisplayServer.get_display_safe_area().size.y - gui_control.size.y
@@ -146,6 +147,8 @@ func _process(_delta):
 		_adjust_gui_vbox_size(virtual_keyboard_height-bottom_menu_size)
 		virtual_keyboard_handled = false
 		
+func _process(_delta):
+	handle_virtual_keyboard()
 	socket.poll()
 	var state = socket.get_ready_state()
 	if state == WebSocketPeer.STATE_OPEN:		
@@ -273,9 +276,13 @@ func _on_text_edit_text_changed():
 		text_input.text = "" 
 	_on_line_edit_text_changed(text_input.text)
 
+func remove_blur():
+	blur_rect.material.set_shader_parameter("lod",0)
 
 func _on_options_button_pressed():
+	blur_rect.material.set_shader_parameter("lod",2)
 	var opt = options_scene.instantiate()
 	opt.connect("name_changed", set_name_label)
+	opt.connect("exited_options", remove_blur)
 	gui_control.add_child(opt)
 	
